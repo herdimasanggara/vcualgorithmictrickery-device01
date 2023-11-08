@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move Background</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 1s;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if DeviceOrientationEvent is available
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', function(event) {
+            var alpha = event.alpha;
+            var beta = event.beta;
+            var gamma = event.gamma;
+
+            // Use alpha for the background color
+            var hue = alpha; // Hue is a degree on the color wheel (0 to 360)
+            var saturation = 50 + (beta / 180) * 50; // Saturation is a percentage (0% to 100%)
+            var lightness = 50 + (gamma / 90) * 50; // Lightness is a percentage (0% to 100%)
+
+            document.body.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }, false);
+    } else {
+        console.log("Sorry, your browser doesn't support Device Orientation");
+    }
+});
+</script>
+</head>
+<body>
+<div id="content">
+    <p>Move your device to change the background color.</p>
+</div>
+</body>
+</html>
