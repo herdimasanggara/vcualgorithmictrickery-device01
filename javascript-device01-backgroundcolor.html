@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Motion/Orientation Demo 01</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 1s;
+        font-family: Arial, sans-serif;
+        position: relative;
+    }
+    #requestButton {
+        display: block;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        padding: 10px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+</style>
+</head>
+<body>
+<div id="content">
+    <p>Move your device to change the background color.</p>
+    <button id="requestButton" onclick="requestAccess()">Enable Device Orientation</button>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function handleOrientation(event) {
+            var x = event.alpha; 
+            var y = event.beta;  
+            var z = event.gamma; 
+            var hue = x; 
+            var saturation = 50 + (y / 180) * 50; 
+            var lightness = 50 + (z / 90) * 50; 
+            document.body.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        function requestAccess() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation, false);
+                        }
+                    })
+                    .catch(console.error);
+                this.remove();
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation, false);
+            }
+        }
+
+        if (window.DeviceOrientationEvent) {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                document.getElementById('requestButton').style.display = 'block';
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation, false);
+            }
+        } else {
+            console.log("Sorry, your browser doesn't support Device Orientation");
+        }
+    });
+</script>
+</body>
+</html>
